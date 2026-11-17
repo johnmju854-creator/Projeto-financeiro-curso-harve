@@ -10,7 +10,7 @@
 
 do $$
 declare
-  email_alvo text := 'claudia123@gmail.com';
+  email_alvo text := 'COLOQUE-AQUI-O-EMAIL-DA-SUA-CONTA';
   uid        uuid;
   conta_cc   bigint;
   conta_cart bigint;
