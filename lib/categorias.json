@@ -1,0 +1,22 @@
+[
+  {
+    "id": 1,
+    "nome": "Mercado",
+    "descricao": "Compras de supermercado, feira e padaria."
+  },
+  {
+    "id": 2,
+    "nome": "Salário",
+    "descricao": "Renda mensal recebida do trabalho."
+  },
+  {
+    "id": 3,
+    "nome": "Transporte",
+    "descricao": "Combustível, aplicativos de transporte e passagens."
+  },
+  {
+    "id": 4,
+    "nome": "Lazer",
+    "descricao": "Cinema, passeios, restaurantes e outras diversões."
+  }
+]

@@ -1,0 +1,207 @@
+body {
+  font-family: system-ui, sans-serif;
+  margin: 0;
+  color: #1f2937;
+  background: #f9fafb;
+}
+
+main,
+.conteudo {
+  max-width: 640px;
+  margin: 0 auto;
+  padding: 24px 16px;
+}
+
+.menu {
+  display: flex;
+  gap: 16px;
+  padding: 12px 16px;
+  background: #1e3a8a;
+}
+
+.menu a {
+  color: #fff;
+  text-decoration: none;
+}
+
+.lista {
+  list-style: none;
+  padding: 0;
+  display: grid;
+  gap: 12px;
+}
+
+.card {
+  display: grid;
+  gap: 4px;
+  padding: 12px 16px;
+  background: #fff;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+}
+
+.entrada {
+  color: #15803d;
+}
+
+.saida {
+  color: #b91c1c;
+}
+
+.filtros {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 16px;
+}
+
+.filtros input {
+  flex: 1;
+  padding: 8px;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+}
+
+.filtros button {
+  padding: 8px 12px;
+  border: 0;
+  border-radius: 6px;
+  background: #1e3a8a;
+  color: #fff;
+  cursor: pointer;
+}
+
+.total {
+  margin: 0 0 16px;
+}
+
+.menu form {
+  margin-left: auto;
+}
+
+.menu button {
+  padding: 4px 12px;
+  border: 1px solid #fff;
+  border-radius: 6px;
+  background: transparent;
+  color: #fff;
+  cursor: pointer;
+}
+
+.login {
+  max-width: 360px;
+  margin: 0 auto;
+}
+
+.form-login {
+  display: grid;
+  gap: 12px;
+}
+
+.form-login label {
+  display: grid;
+  gap: 4px;
+}
+
+.form-login input {
+  padding: 8px;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+}
+
+.form-login-botoes {
+  display: flex;
+  gap: 8px;
+}
+
+.login button {
+  padding: 8px 12px;
+  border: 0;
+  border-radius: 6px;
+  background: #1e3a8a;
+  color: #fff;
+  cursor: pointer;
+}
+
+.login button.secundario {
+  background: #e5e7eb;
+  color: #1f2937;
+}
+
+.erro {
+  color: #b91c1c;
+}
+
+.aviso {
+  color: #15803d;
+}
+
+.link-botao {
+  display: inline-block;
+  padding: 8px 12px;
+  border-radius: 6px;
+  background: #1e3a8a;
+  color: #fff;
+  text-decoration: none;
+}
+
+.link-botao.secundario {
+  background: #e5e7eb;
+  color: #1f2937;
+}
+
+.form-lancamento {
+  display: grid;
+  gap: 12px;
+  max-width: 420px;
+}
+
+.form-lancamento label {
+  display: grid;
+  gap: 4px;
+}
+
+.form-lancamento input,
+.form-lancamento select {
+  padding: 8px;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  font: inherit;
+}
+
+.form-lancamento-botoes {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.form-lancamento button,
+.confirmar-exclusao button,
+button.perigo {
+  padding: 8px 12px;
+  border: 0;
+  border-radius: 6px;
+  background: #1e3a8a;
+  color: #fff;
+  cursor: pointer;
+}
+
+.form-lancamento button:disabled,
+.confirmar-exclusao button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+button.perigo {
+  background: #b91c1c;
+}
+
+button.secundario {
+  background: #e5e7eb;
+  color: #1f2937;
+}
+
+.confirmar-exclusao {
+  display: grid;
+  gap: 8px;
+  max-width: 420px;
+}
