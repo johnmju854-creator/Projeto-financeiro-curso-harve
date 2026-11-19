@@ -3,27 +3,35 @@
 // Botão de excluir com confirmação: o primeiro clique só pergunta "tem certeza?".
 // (Não usamos window.confirm porque ele não funciona bem em todos os navegadores embutidos.)
 import { useActionState, useState } from "react";
-import type { EstadoFormulario } from "@/lib/lancamentos-utils";
+
+// Serve para lançamento e categoria: só precisa que o estado tenha a mensagem de erro
+type EstadoExclusao = { erro?: string };
 
 type BotaoExcluirProps = {
-  acao: (estado: EstadoFormulario, formData: FormData) => Promise<EstadoFormulario>;
+  acao: (estado: EstadoExclusao, formData: FormData) => Promise<EstadoExclusao>;
+  rotulo?: string; // texto do botão (padrão: lançamento)
+  aviso?: string; // pergunta de confirmação (padrão: lançamento)
 };
 
-export function BotaoExcluir({ acao }: BotaoExcluirProps) {
+export function BotaoExcluir({
+  acao,
+  rotulo = "Excluir lançamento",
+  aviso = "Tem certeza que quer excluir este lançamento? Isso não pode ser desfeito.",
+}: BotaoExcluirProps) {
   const [confirmando, setConfirmando] = useState(false);
   const [estado, formAction, excluindo] = useActionState(acao, {});
 
   if (!confirmando) {
     return (
       <button type="button" className="perigo" onClick={() => setConfirmando(true)}>
-        Excluir lançamento
+        {rotulo}
       </button>
     );
   }
 
   return (
     <form action={formAction} className="confirmar-exclusao" aria-busy={excluindo}>
-      <p role="alert">Tem certeza que quer excluir este lançamento? Isso não pode ser desfeito.</p>
+      <p role="alert">{aviso}</p>
       {estado.erro && (
         <p role="alert" className="erro">
           {estado.erro}

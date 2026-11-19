@@ -1,82 +1,85 @@
 # PROGRESSO
 
+Última atualização: 2026-11-17.
+
 ## Objetivo
-Curso: construir a "Caderneta da Claudia" (controle financeiro pessoal) em Next.js (App Router + TypeScript). Banco SQL em schema.sql / dados.sql.
+Caderneta da Claudia: app de controle financeiro pessoal feito durante o curso Harve.
+Next.js 15 (App Router) + TypeScript + Supabase (login por e-mail/senha e RLS). Sem rotas de API e sem
+bibliotecas extras (só `@supabase/ssr` e `@supabase/supabase-js`, que o `ssr` exige).
+Repositório: `git@github.com:johnmju854-creator/Projeto-financeiro-curso-harve.git` (branch `main`).
 
 ## Feito
-- schema.sql criado (5 tabelas: usuarios, contas, categorias, recorrencias, lancamentos).
-- Esqueleto Next.js 15 + TypeScript, sem banco, sem API, sem estado de cliente, sem libs extras:
-  - app/page.tsx (/), app/(area)/lancamentos/page.tsx, app/(area)/lancamentos/[id]/page.tsx, app/(area)/dashboard/page.tsx
-  - app/(area)/layout.tsx (menu Lancamentos / Dashboard), app/(area)/loading.tsx, app/not-found.tsx
-  - components/lancamento-card.tsx (export nomeado, prop `dados`, usado com map; igual ao curso), lib/lancamentos.ts (lista fixa de 2 exemplos)
-- `npm run build` passou (compila e checa tipos).
-- Categorias (2026-11-10): lib/categorias.json (4 categorias: id, nome, descricao) + lib/categorias.ts (tipo `Categoria`, `categorias`, `buscarCategoria`); paginas /categorias e /categoria/[id] (em app/(area)/); components/categoria-card.tsx; menu ganhou "Categorias".
-- Lancamento ganhou `categoriaId?` (opcional). Lancamento 1 = Mercado; lancamento 2 = sem categoria. Card e detalhe do lancamento mostram a categoria (ou "sem categoria"); /categoria/[id] lista os lancamentos da categoria.
-- Verificado com `npx tsc --noEmit` (passou). Nao rodei build/servidor para nao conflitar com o `npm run dev` do usuario.
+**Base (05/11)**
+- Esqueleto do app: `/`, `/lancamentos`, `/lancamentos/[id]`, `/dashboard` (placeholder "Em breve"), menu, `loading.tsx`, `not-found.tsx`.
+- `schema.sql`: modelo LOCAL antigo (usa `usuario_id`; não é o do Supabase, hoje está obsoleto).
 
-- Busca de dados (2026-11-10): lib/lancamentos.ts agora tem `listarLancamentos()` (async, espera 300ms, devolve 6 lancamentos de 2025) e `filtrarLancamentos()` (busca sem acento/maiuscula + tipo). /lancamentos virou Server Component async; o unico 'use client' e components/lancamentos-filtrados.tsx (useState: campo de busca + botao Tudo/Só entradas/Só saídas; mensagem quando a lista fica vazia).
-- Testes: `npm test` (node:test embutido, testes/lancamentos.test.mjs) — 5 passando. `npx tsc --noEmit` passou.
+**Funcionalidades (10/11)**
+- Categorias (`/categorias`, `/categoria/[id]`), lançamento com categoria opcional.
+- Lista com busca por descrição (sem acento/maiúscula), botão Tudo / Só entradas / Só saídas e **total de saídas ao vivo** (lição "O total do que está filtrado").
+- Revisão de código aplicada: `error.tsx`, validação dos dados (`lerLancamento`), descrição `NULL` tratada, separação servidor/cliente, `aria-live`, `useMemo`/`useDeferredValue`.
 
-- Total ao vivo (licao "O total do que esta filtrado", 2026-11-10): `totalDeSaidas(lista)` em lib/lancamentos.ts (soma so saidas, em centavos). components/lancamentos-filtrados.tsx mostra "Total de saídas: R$ ..." acima da lista, calculado sobre a lista ja filtrada. Digitando "mer" = R$ 341,43. Pagina /lancamentos continua Server Component (so o componente de filtro tem 'use client'). `npm test`: 7 passando; tsc ok.
+**Supabase e login (12/11)**
+- Clientes do Supabase (`lib/supabase/{env,server,client,middleware}.ts`), `middleware.ts` (matcher: `/lancamentos`, `/categorias`, `/categoria`, `/dashboard`; usa `getUser()`), `lib/auth.ts`.
+- Login em `app/(area)/login/` (Server Actions `entrar`, `cadastrar`, `sair`). O menu só aparece logado.
+- Buscas reais no Supabase, sempre filtrando por `user_id`.
 
-- Revisao do codigo (2026-11-10), todas as melhorias aplicadas:
-  - app/(area)/error.tsx (tela de erro com "Tentar de novo"); /lancamentos com `dynamic = "force-dynamic"` (nao congela dados no build).
-  - lib dividida: lib/lancamentos-utils.ts (puro/compartilhado: tipos, lerLancamento, filtro, soma, formatadores) e lib/lancamentos.ts + lib/categorias.ts (SO servidor). Componentes de cliente importam so do utils; o card recebe `categoria` ja resolvida (`anexarCategoria`).
-  - `descricao` agora `string | null`; "(sem descrição)" na tela; filtro nao quebra com NULL.
-  - `lerLancamento` valida tipo/valor/data na entrada (descarta registro invalido com aviso no terminal); `totalDeSaidas` ignora NaN/Infinity; `formatarData` aceita data com horario.
-  - total com `aria-live`; filtro com `useMemo` + `useDeferredValue`; regex de acentos com ̀-ͯ.
-  - tsconfig: `allowImportingTsExtensions` (lib/lancamentos.ts importa "./lancamentos-utils.ts" para o `node --test` funcionar).
-  - `npm test`: 12 passando; tsc ok; `npm run build` ok (apagada a .next depois).
-  - NAO corrigido de proposito: lancamentos duplicados do dados.sql (ex.: 288/289) — nao da para saber so pelo codigo qual e duplicata real; resolver na limpeza dos dados.
+**Criar, editar e excluir (17/11)**
+- `app/(area)/lancamentos/actions.ts` (Server Actions `criarLancamento`, `editarLancamento`, `excluirLancamento`): confere login, valida (descrição preenchida, valor > 0), confere que conta/categoria são da pessoa, grava com o `user_id`, devolve mensagem de erro sem quebrar, atualiza a lista e volta para `/lancamentos`.
+- Telas `/lancamentos/novo` e `/lancamentos/[id]/editar`, com `components/formulario-lancamento.tsx` (erro na tela, botão desabilitado enviando) e `components/botao-excluir.tsx` (confirmação em 2 passos).
+- `lib/contas.ts`; `lib/categorias.ts` e `lib/lancamentos.ts` com gravar/editar/excluir.
 
-- Supabase + login (2026-11-12), NAO testado com banco real (sem credenciais aqui):
-  - Pacotes: @supabase/ssr + @supabase/supabase-js (este e dependencia obrigatoria do ssr).
-  - lib/supabase/{env,server,client,middleware}.ts; middleware.ts (matcher: /lancamentos, /categorias, /categoria, /dashboard; manda para /login quem nao esta logado, usando getUser()); lib/auth.ts (obterUsuario / exigirUsuario).
-  - Login em app/(area)/login/page.tsx + actions.ts (Server Actions entrar/cadastrar/sair, sem rotas de API). O page.tsx antigo era um placeholder, foi sobrescrito no mesmo lugar. Menu (area)/layout.tsx so aparece logado e tem botao Sair.
-  - lib/lancamentos.ts e lib/categorias.ts agora leem do Supabase (filtram por user_id; lancamentos mais recentes primeiro; nome da categoria via categorias(nome)). Paginas /lancamentos, /lancamentos/[id], /categorias, /categoria/[id] usam os dados reais. Ids aceitam numero ou uuid.
-  - lib/categorias.json (exemplo) nao e mais usado (mantido na pasta). Categoria perdeu a "descricao" na tela (so id e nome sao lidos).
-  - rls-supabase.sql: RLS + policies (select/insert/update/delete com auth.uid()) para lancamentos, categorias e contas. AINDA NAO RODADO no Supabase.
-  - .env.example criado (copiar para .env.local com URL e chave anon); .gitignore libera o .env.example.
-  - Testes: `npm test` 13 passando (parte pura); tsc ok; build ok com variaveis falsas.
+**Banco (17/11)**
+- Rodados pelo John no SQL Editor do Supabase: `supabase-schema.sql` (categorias, contas, lancamentos; id bigint identity; `user_id` default `auth.uid()`; categoria opcional; grants só para `authenticated`) e `rls-supabase.sql` (RLS + policies com `auth.uid()`).
+- `supabase-dados-exemplo.sql` (opcional): 2 contas, 4 categorias, 6 lançamentos; trocar `COLOQUE-AQUI-O-EMAIL-DA-SUA-CONTA` pelo e-mail da conta de teste.
+- O John testou com o banco real (conta de teste do curso) e confirmou: "deu tudo certo" (lista, filtro/total, novo, editar, excluir, categorias).
 
-- Criar, editar e excluir lancamentos (2026-11-17), NAO testado com banco real (Supabase ainda vazio):
-  - Rotas: /lancamentos/novo e /lancamentos/[id]/editar (app/(area)/lancamentos/...). Links: "+ Novo lancamento" na lista, "Editar" em cada card e na pagina do lancamento.
-  - app/(area)/lancamentos/actions.ts ("use server"): criarLancamento, editarLancamento(id,...), excluirLancamento(id,...). Cada uma: exigirUsuario -> validarLancamento (descricao preenchida, valor > 0...) -> confere que conta/categoria sao DA PESSOA -> grava com user_id do logado -> devolve {erro, valores} sem quebrar -> revalidatePath("/", "layout") + redirect("/lancamentos"). Sem rotas de API.
-  - components/formulario-lancamento.tsx (useActionState: mostra erro, botao desabilitado "Salvando...", mantem o que foi digitado) e components/botao-excluir.tsx (confirmacao em 2 passos, sem window.confirm).
-  - lib/lancamentos-utils.ts: validarLancamento, lerValor (aceita 12,50 / 12.50 / 1.234,56; recusa "1.234" ambiguo e >2 decimais), valorParaCampo, hojeISO (horario de Brasilia), idDaUrlValido, lerItemComNome. Lancamento ganhou `contaId?`.
-  - lib/contas.ts (novo: listarContas/buscarConta, filtram por user_id). lib/categorias.ts agora recebe userId: listarCategorias(userId), buscarCategoria(userId, id). lib/lancamentos.ts: inserirLancamento, atualizarLancamento, removerLancamento (devolvem {ok}|{ok:false,erro}; erro tecnico so no terminal).
-  - Testes: `npm test` 21 passando; tsc ok. Build: ver nota abaixo.
-  - Suposicao: tabela `contas` tem user_id e coluna `nome`; `lancamentos` tem conta_id. O app NAO tem tela para cadastrar contas/categorias ainda (formulario avisa quando nao ha conta).
+**GitHub (17/11)**
+- `git init` na pasta do projeto (repo próprio), commits `0357ce6` (primeira versão, 45 arquivos) e `4ea2751` (troca do e-mail de teste por texto genérico), ambos enviados. `.env.local`, `node_modules` e `next-env.d.ts` ficam fora (`.gitignore`).
+- O commit `0357ce6` ainda tem o e-mail de teste no histórico (decisão do John: não reescrever).
 
-- Banco Supabase (2026-11-17): o John mandou criar o SQL. Criados supabase-schema.sql (categorias, contas, lancamentos; id bigint identity; user_id uuid default auth.uid(); categoria opcional; checks; indices; grants so para authenticated e revoke do anon; notify pgrst reload) e supabase-dados-exemplo.sql (opcional; troca COLOQUE-AQUI-O-EMAIL-DA-SUA-CONTA pelo e-mail do cadastro). ORDEM: 1) supabase-schema.sql 2) rls-supabase.sql 3) supabase-dados-exemplo.sql. AINDA NAO RODADOS no Supabase (o John cola no SQL Editor). Sem tabela `usuarios` (decisao). SQL nao foi executado por mim (sem Postgres local).
-- 2026-11-17: o John RODOU supabase-schema.sql e rls-supabase.sql no Supabase (disse "esta ok"); NAO rodou o supabase-dados-exemplo.sql (opcional). Falta: testar o app (lista vazia ate ter conta/lancamentos; o formulario "Novo" avisa que nao ha conta).
-- 2026-11-17: o John testou o app com o banco real (login o e-mail da conta de teste, conta de teste do curso) e disse que "deu tudo certo ate entao": lista, filtro/total, novo, editar, excluir e categorias. Banco criado (schema + RLS rodados). Proximo: GitHub (aguardando ok explicito do John para git init/commit/push).
-- 2026-11-17: GITHUB FEITO com ok do John: git init na pasta do projeto (branch main), 1o commit 0357ce6 "Primeira versão da Caderneta da Claudia" (45 arquivos; .env.local, node_modules e next-env.d.ts ficaram de fora), remote origin = git@github.com:johnmju854-creator/Projeto-financeiro-curso-harve.git, push -u origin main OK. Novos commits/push so quando o John pedir. (As linhas "GitHub" abaixo sao o plano antigo.) Obs.: supabase-dados-exemplo.sql tem o e-mail de teste o e-mail da conta de teste; se o repo for publico, considerar trocar.
-- GitHub (plano antigo): repo informado pelo John: git@github.com:johnmju854-creator/Projeto-financeiro-curso-harve.git (SSH). A pasta do projeto NAO tem .git proprio (esta dentro do repo do Desktop). Plano: git init DENTRO da pasta, branch main, primeiro commit conferido, remote add origin e push — SO apos o ok do John (mostrar lista de arquivos antes). .env.local e ignorado pelo .gitignore.
-
-## Combinado com o John (2026-11-10)
-- Proxima sessao: quinta-feira 2026-11-12.
-- Ainda NAO existe repositorio no GitHub para este projeto. Tudo fica salvo so nesta pasta; o John cria o repo depois e faz o commit/push. Nao fazer commit/push/git init sem ele pedir. (A pasta esta dentro do repo git do Desktop, onde aparece como nao rastreada.)
+**Verificações**
+- `npm test` (node:test embutido): 21 testes passando. `npx tsc --noEmit` ok. `npm run build` ok.
+- Prévia clicável das telas (artifact privado): https://claude.ai/artifact/PLoVRp691G1DTKq1nLaFJL
 
 ## Em andamento (onde paramos)
-- 2026-11-12 (FINAL DO DIA): o projeto no Supabase foi criado agora e esta VAZIO (sem tabelas) — por isso o PGRST205 abaixo; o codigo nao tem erro. O John ainda nao chegou nessa parte do curso, entao ESTAMOS AGUARDANDO o curso. Nao criar tabelas/SQL antes do ok dele. Quando for a hora, a recomendacao (so apos o ok, um item por vez): (1) criar supabase-schema.sql com categorias, contas, lancamentos (id numerico identity, user_id uuid default auth.uid(), categoria_id opcional, FKs, checks de tipo/valor, indice) — decidir se inclui tabela usuarios + gatilho (recomendado NAO por enquanto); (2) rodar rls-supabase.sql; (3) dados de exemplo ligados a conta de teste; (4) testar tudo no navegador; (5) criar repo no GitHub + commit (conferir que .env.local nao vai); (6) depois, telas de criar/editar lancamentos e categorias.
-- 2026-11-12: login funcionou (conta criada, entrou). /lancamentos mostra "Nao deu para carregar" porque a API do Supabase (projeto gdeguqesnajgrmjdadeg) responde PGRST205 "Could not find the table public.lancamentos/categorias" (404 tambem para usuarios, contas e nomes em ingles). Ou as tabelas nao existem nesse projeto, ou estao em outro schema/nome. Falta o John conferir no Table Editor; se nao existirem, criar com um SQL (a preparar) + rodar rls-supabase.sql. NUNCA usar a chave secret no app.
-- Falta o John: criar .env.local (copiando .env.example), rodar rls-supabase.sql no Supabase, reiniciar `npm run dev` e testar cadastro/entrada/saida no navegador.
-- Se o Supabase tiver "Confirm email" ligado, desligar para testar (ou confirmar o e-mail e depois entrar). Site URL = http://localhost:3000.
+**CONCLUÍDO (19/11):** o John rodou o SQL, testou na tela (criou "Pet", cor #8E24AA) e confirmou a linha no Supabase. Só falta commit (quando o John pedir).
+**Pedido da Cláudia (17/11): tela de categorias completa.**
+Criar, editar e excluir categoria (nome, tipo, cor #RRGGBB), mesma validação/mensagens dos lançamentos.
+O John aprovou: categorias antigas ficam `saida` + `#9E9E9E`; o tipo é só informativo (não filtra o lançamento).
+Regras: nome obrigatório, até 40 caracteres, único por pessoa; tipo `entrada`/`saida`; cor `#RRGGBB` (gravada em maiúsculas);
+nome repetido: "Você já tem uma categoria com esse nome."; excluir NÃO apaga lançamentos (ficam sem categoria).
+Arquivos: `supabase-categorias-tipo-cor.sql` (NOVO, o John precisa rodar no SQL Editor) e `supabase-schema.sql` (atualizado);
+`lib/categorias-utils.ts` (validação pura), `lib/categorias.ts` (listar/buscar/inserir/atualizar/remover);
+`app/(area)/categorias/actions.ts` (criarCategoria, editarCategoria, excluirCategoria);
+`components/formulario-categoria.tsx`; rotas `/categorias/nova` e `/categoria/[id]/editar`;
+`components/categoria-card.tsx` (cor, tipo, Editar), `components/botao-excluir.tsx` (agora aceita texto próprio), `globals.css`;
+`testes/categorias.test.mjs` (8 testes). Novo script `npm run verificar` (= `tsc --noEmit` + `npm test`): 29 testes passando.
+**Validado:** SQL rodado, "Pet" criada e cor trocada para #8E24AA, linha conferida no Supabase. Nada foi commitado ainda.
 
-## Proximos passos
-- Conferir se os nomes de colunas do Supabase batem com o codigo: tabelas com chave `id`; lancamentos com user_id, categoria_id, data_lancamento; FK lancamentos.categoria_id -> categorias.id; categorias/contas com user_id.
-- Decidir: criar linha em `usuarios` ao cadastrar (trigger no Supabase)?
-- Rodar schema.sql + dados.sql num PostgreSQL para validar (schema.sql e do modelo antigo com usuario_id; o Supabase do John usa user_id).
-- Proximas aulas do curso (conectar banco, dashboard de verdade).
+## Próximos passos (opções; um por vez, só com o ok do John)
+1. Tela para **cadastrar contas** (categorias já têm tela; contas hoje só pelo SQL ou Table Editor; o formulário "Novo" avisa quando não há conta).
+2. **Melhorar o visual** (hoje é o CSS básico do curso).
+3. **Próxima aula do curso:** o John manda o print/texto da aula.
+4. **Dashboard** de verdade (hoje é só "Em breve").
+5. Tabela `usuarios` + gatilho no cadastro (decidido NÃO por enquanto; o login guarda e-mail/senha por conta própria).
+6. Limpeza: `lib/categorias.json` e `schema.sql` (modelo antigo) estão obsoletos; `dados.sql` nunca esteve na pasta (lançamentos duplicados dele, ex. 288/289, não foram tratados).
+7. Conferir os avisos do `npm audit`.
 
-## Decisoes importantes
-- TypeScript fixado na versao 5 (a 7 quebra o Next 15).
-- Layout proprio via grupo de rotas `(area)` (nao aparece na URL).
-- /dashboard foi criado como pagina simples so para o menu funcionar.
-- Sem biblioteca de testes (o prompt do curso proibe libs extras); verificacao feita com `npm run build`.
-- Nunca rodar `npm run build` com `npm run dev` ligado (os dois usam .next e quebram: erro "Cannot find module ./477.js"). Verificar tipos com `npx tsc --noEmit`.
-- Rota de detalhe da categoria e /categoria/[id] (singular), como pedido; a lista e /categorias (plural).
-- Testes usam o `node --test` embutido (nao e biblioteca extra). buscarLancamento/lancamentosDaCategoria continuam sincronos, lendo os mesmos 6 dados.
-- JSON das categorias fica em lib/categorias.json e e importado por lib/categorias.ts.
-- schema.sql: sem regra "tipo do lancamento = tipo da categoria", porque o dados.sql tem casos que violam.
+## Como retomar
+- Terminal do VS Code, dentro da pasta: `npm run dev` (o John liga e deixa aberto). Ver no Simple Browser: Ctrl+Shift+P > "Simple Browser: Show" > `http://localhost:3000/login` (use a porta que o terminal mostrar).
+- `.env.local` (não vai para o GitHub): copiar de `.env.example` e preencher `NEXT_PUBLIC_SUPABASE_URL` e `NEXT_PUBLIC_SUPABASE_ANON_KEY` (use a chave **publishable**; NUNCA a secret). O Next só lê o arquivo ao iniciar.
+- No Supabase: "Confirm email" desligado (Authentication > Sign In / Providers > Email) e Site URL = `http://localhost:3000`.
+- Ordem dos SQL (já rodados): `supabase-schema.sql` > `rls-supabase.sql` > (opcional) `supabase-dados-exemplo.sql`.
+
+## Decisões importantes
+- TypeScript fixado na versão 5 (a 7 quebra o Next 15).
+- Grupo de rotas `(area)` dá o layout com menu; o login fica em `(area)/login` e o menu só aparece logado.
+- **Nunca rodar `npm run build` com `npm run dev` ligado** (os dois usam `.next` e quebram: "Cannot find module ./477.js"). Verificar com `npx tsc --noEmit` e `npm test`; se precisar de build, só sem servidor, e apagar `.next` depois.
+- Código do servidor (`lib/lancamentos.ts`, `lib/categorias.ts`, `lib/contas.ts`, `lib/auth.ts`, `lib/supabase/*`) NUNCA importado por componentes `"use client"`; o que é compartilhado fica em `lib/lancamentos-utils.ts` (puro, testável).
+- Só os componentes interativos têm `"use client"`; as páginas são Server Components.
+- Segurança: só a chave publishable no app; nunca `service_role`/secret. RLS no banco + filtro por `user_id` no código + conferência de dono na Server Action. Sem SQL montado à mão (só `.from().select().eq()`), então protegido contra SQL Injection.
+- Ids tratados como valor opaco (número ou uuid); id vindo da URL só passa com formato seguro.
+- `valor`: aceita `12,50`, `12.50`, `1.234,56`; recusa `1.234` (ambíguo) e mais de 2 casas decimais.
+- Testes com `node --test` (não é biblioteca extra); a parte de banco não tem teste automático (precisa do Supabase real).
+- Categoria é opcional no lançamento; `descricao` pode ser `NULL` ("(sem descrição)" na tela).
+- Commit e push **só quando o John pedir**. Não rodar `git init`/reescrever histórico sem ele pedir.

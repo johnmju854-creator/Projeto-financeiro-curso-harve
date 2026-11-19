@@ -205,3 +205,26 @@ button.secundario {
   gap: 8px;
   max-width: 420px;
 }
+
+/* Categorias: bolinha de cor, tipo e campo de cor */
+.card-categoria {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+.bolinha-cor {
+  width: 1rem;
+  height: 1rem;
+  border-radius: 50%;
+  border: 1px solid rgba(0, 0, 0, 0.25);
+  flex-shrink: 0;
+}
+.tipo-categoria {
+  margin-left: auto;
+  font-size: 0.9rem;
+}
+.campo-cor {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}

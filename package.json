@@ -6,7 +6,8 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "test": "node --test testes/*.test.mjs"
+    "test": "node --test testes/*.test.mjs",
+    "verificar": "npx tsc --noEmit && npm test"
   },
   "dependencies": {
     "@supabase/ssr": "^0.12.7",
