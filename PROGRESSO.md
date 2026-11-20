@@ -42,6 +42,24 @@ Repositório: `git@github.com:johnmju854-creator/Projeto-financeiro-curso-harve.
 - Prévia clicável das telas (artifact privado): https://claude.ai/artifact/PLoVRp691G1DTKq1nLaFJL
 
 ## Em andamento (onde paramos)
+### >>> LEIA PRIMEIRO: situação ao fim da aula de 20/11 <<<
+**TUDO COMMITADO E ENVIADO ao GitHub** (`git log -3` mostra: "Dashboard com resumo do mês, saídas por categoria e 6 meses" por cima do
+`717bd17`). Não há alterações pendentes no código.
+**O John TESTOU TUDO, logado, e está OK (20/11):** login/saída, redirecionamentos, menu, Lançamentos (abas e totais), Categorias (Salário já
+está como entrada), formulários, Dashboard (cartões, barras, 6 meses, tabela, setas de mês). `npm run verificar`: 52 testes ok; `npm run build` ok.
+**PENDENTE (lista):**
+1. ~~Testar e commitar o dashboard~~ (FEITO). ~~Salário como entrada~~ (FEITO).
+3. **Publicar (Vercel + Supabase) — é a próxima etapa:** nada feito ainda além de build ok e repo no GitHub (PÚBLICO por decisão do John; deixar privado depois).
+   Passos: Vercel importa o repo; variáveis `NEXT_PUBLIC_SUPABASE_URL` e `NEXT_PUBLIC_SUPABASE_ANON_KEY` (publishable; o John cola); depois Supabase >
+   Authentication > URL Configuration (Site URL + Redirect URLs com a URL da Vercel, mantendo localhost); testar no site publicado e conferir que outra conta não vê os dados.
+   Não há acesso à extensão do Chrome nesta sessão: o John clica nos painéis e a IA guia (prints ajudam).
+4. Decidir: manter o título "Entrar na Caderneta" na tela de login? (pergunta aberta)
+5. Ideia aberta: no formulário de lançamento mostrar só as categorias do mesmo tipo (Entrada/Saída). Hoje o tipo da categoria é só informativo.
+6. Tela para cadastrar **contas** (hoje só por SQL/Table Editor).
+7. Depois: repo privado, domínio próprio, região da Vercel perto do Supabase, `npm audit`, limpeza de `lib/categorias.json` e `schema.sql` (obsoletos).
+**Lembretes:** repo é PÚBLICO (nada de e-mail/senha/chave em arquivo); a conta de teste da aula é a da Cláudia (NÃO é do John; o e-mail dela fica só no Supabase > Authentication > Users); parar o
+`npm run dev` antes de `npm run build` e apagar `.next` depois; commit/push só quando o John pedir.
+
 **CONCLUÍDO (19/11):** o John rodou o SQL, testou na tela (criou "Pet", cor #8E24AA) e confirmou a linha no Supabase. Só falta commit (quando o John pedir).
 **Pedido da Cláudia (17/11): tela de categorias completa.**
 Criar, editar e excluir categoria (nome, tipo, cor #RRGGBB), mesma validação/mensagens dos lançamentos.
@@ -93,11 +111,21 @@ O aviso do navegador "se sair algo pode se perder" no Supabase: provavelmente co
 segunda execução; acerta tipo/cor de categorias existentes com o mesmo nome, ex. Salário vira entrada). NÃO foi testado num Postgres
 (Docker desligado), só revisado; se der erro nada é criado. Falta: John rodar e conferir; depois construir o Dashboard de verdade.
 
+**Commit 717bd17 (20/11, enviado):** login direto ao painel, menu sem o nome, `supabase-dados-ficticios.sql` (e-mail trocado de volta para
+o texto genérico antes do commit). O John JÁ rodou o SQL no Supabase com o e-mail da Cláudia da aula (a conta de teste
+da aula, NÃO é do John; nunca colocar esse e-mail em arquivo do projeto, o repo é público).
+**Dashboard de verdade (20/11) — FEITO, NÃO commitado:** `app/(area)/dashboard/page.tsx` (servidor; mês na URL `?mes=AAAA-MM`, futuro/inválido
+vira o mês atual), `components/dashboard-secoes.tsx` (seletor de mês, 3 cartões, saídas por categoria nas cores da categoria, colunas de 6 meses,
+"Ver como tabela", dica só com CSS), `lib/dashboard-utils.ts` (contas puras em centavos) + `testes/dashboard.test.mjs` (18 testes), CSS no
+`globals.css` (entradas = verde #059669, saídas = índigo #4F46E5, validadas). Sem biblioteca nova. `npm run verificar`: 52 testes ok;
+`npm run build` ok (`.next` apagado). Falta: o John conferir no `localhost:3000/dashboard` (dev religado nesta sessão) e pedir commit/push.
+
 ## Próximos passos (opções; um por vez, só com o ok do John)
+(O detalhe do que está pendente está em ">>> LEIA PRIMEIRO" acima.)
 1. Tela para **cadastrar contas** (categorias já têm tela; contas hoje só pelo SQL ou Table Editor; o formulário "Novo" avisa quando não há conta).
-2. ~~Melhorar o visual~~ (feito, falta o John conferir e commitar).
+2. ~~Melhorar o visual~~ (feito e commitado).
 3. **Próxima aula do curso:** o John manda o print/texto da aula.
-4. **Dashboard** de verdade (hoje é só "Em breve").
+4. ~~Dashboard de verdade~~ (feito, falta testar e commitar). **Publicar na Vercel** (ver pendência 3).
 5. Tabela `usuarios` + gatilho no cadastro (decidido NÃO por enquanto; o login guarda e-mail/senha por conta própria).
 6. Limpeza: `lib/categorias.json` e `schema.sql` (modelo antigo) estão obsoletos; `dados.sql` nunca esteve na pasta (lançamentos duplicados dele, ex. 288/289, não foram tratados).
 7. Conferir os avisos do `npm audit`.
@@ -106,7 +134,9 @@ segunda execução; acerta tipo/cor de categorias existentes com o mesmo nome, e
 - Terminal do VS Code, dentro da pasta: `npm run dev` (o John liga e deixa aberto). Ver no Simple Browser: Ctrl+Shift+P > "Simple Browser: Show" > `http://localhost:3000/login` (use a porta que o terminal mostrar).
 - `.env.local` (não vai para o GitHub): copiar de `.env.example` e preencher `NEXT_PUBLIC_SUPABASE_URL` e `NEXT_PUBLIC_SUPABASE_ANON_KEY` (use a chave **publishable**; NUNCA a secret). O Next só lê o arquivo ao iniciar.
 - No Supabase: "Confirm email" desligado (Authentication > Sign In / Providers > Email) e Site URL = `http://localhost:3000`.
-- Ordem dos SQL (já rodados): `supabase-schema.sql` > `rls-supabase.sql` > (opcional) `supabase-dados-exemplo.sql`.
+- Ordem dos SQL (já rodados): `supabase-schema.sql` > `rls-supabase.sql` > `supabase-categorias-tipo-cor.sql` > (opcional) `supabase-dados-ficticios.sql`
+  (rodar UMA vez; trocar o e-mail só no editor do Supabase, nunca no arquivo). O `supabase-dados-exemplo.sql` é o exemplo antigo (6 lançamentos).
+- Antes de testar no navegador: `npm run dev` ligado e Ctrl+F5 em cada tela.
 
 ## Decisões importantes
 - TypeScript fixado na versão 5 (a 7 quebra o Next 15).

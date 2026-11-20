@@ -795,3 +795,370 @@ button.secundario:hover {
   overflow: hidden;
   clip: rect(0 0 0 0);
 }
+
+/* =====================================================================
+   DASHBOARD: resumo do mês, saídas por categoria e evolução de 6 meses.
+   Mesmas cores e tamanhos do resto do app. Entradas = verde, saídas = índigo.
+   ===================================================================== */
+
+:root {
+  --serie-entrada: #059669;
+  --serie-saida: #4f46e5;
+  --bom: #047857;
+}
+
+/* Seletor de mês (filtro que vale para tudo abaixo dele) */
+.filtro-mes {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  padding: 3px;
+  background: var(--branco);
+  border: 1px solid var(--borda);
+  border-radius: 10px;
+  box-shadow: var(--sombra);
+}
+
+.filtro-mes .mes-atual {
+  min-width: 150px;
+  padding: 0 8px;
+  text-align: center;
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--tinta);
+}
+
+.filtro-mes a,
+.filtro-mes span.desligado {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  color: var(--texto);
+  text-decoration: none;
+  font-size: 1.1rem;
+}
+
+.filtro-mes a:hover {
+  background: var(--hover);
+  color: var(--tinta);
+}
+
+.filtro-mes span.desligado {
+  color: var(--borda-forte);
+}
+
+/* Três números do mês */
+.kpis {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+  gap: 8px;
+  margin-bottom: 16px;
+}
+
+.kpi {
+  display: grid;
+  gap: 2px;
+  margin: 0;
+  padding: 14px 16px;
+  background: var(--branco);
+  border: 1px solid var(--borda);
+  border-radius: var(--raio);
+  box-shadow: var(--sombra);
+}
+
+.kpi .rotulo {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.8125rem;
+  color: var(--texto-suave);
+}
+
+.kpi .marca {
+  width: 8px;
+  height: 8px;
+  border-radius: 2px;
+}
+
+.kpi .valor-kpi {
+  font-size: 1.75rem;
+  line-height: 1.2;
+  font-weight: 700;
+  letter-spacing: -0.015em;
+  color: var(--tinta);
+}
+
+.kpi .detalhe {
+  font-size: 0.8125rem;
+  color: var(--texto-suave);
+}
+
+/* Painéis (cartões com título) */
+.paineis {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+  gap: 8px;
+  margin-bottom: 16px;
+}
+
+.painel {
+  min-width: 0;
+  padding: 16px;
+  background: var(--branco);
+  border: 1px solid var(--borda);
+  border-radius: var(--raio);
+  box-shadow: var(--sombra);
+}
+
+.painel .titulo-secao {
+  margin-bottom: 12px;
+}
+
+/* Saídas por categoria: barras horizontais, da maior para a menor */
+.barras-categoria {
+  display: grid;
+  gap: 10px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.barras-categoria li {
+  display: grid;
+  grid-template-columns: 112px minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 12px;
+  font-size: 0.875rem;
+}
+
+.barras-categoria .nome-cat {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  color: var(--tinta);
+}
+
+.barras-categoria .trilho {
+  height: 12px;
+}
+
+.barras-categoria .barra {
+  display: block;
+  height: 12px;
+  min-width: 4px;
+  border-radius: 0 4px 4px 0; /* ponta arredondada, base reta */
+  outline-offset: 2px;
+}
+
+.barras-categoria .valor-cat {
+  font-variant-numeric: tabular-nums;
+  color: var(--tinta);
+  text-align: right;
+  white-space: nowrap;
+}
+
+.barras-categoria .valor-cat small {
+  margin-left: 6px;
+  color: var(--texto-suave);
+}
+
+/* Evolução: colunas lado a lado (entradas e saídas de cada mês) */
+.legenda {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  margin: 0 0 12px;
+  padding: 0;
+  list-style: none;
+  font-size: 0.8125rem;
+  color: var(--texto);
+}
+
+.legenda li {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.legenda .chave {
+  width: 10px;
+  height: 10px;
+  border-radius: 2px;
+}
+
+.grafico-meses {
+  position: relative;
+  display: grid;
+  grid-template-columns: 40px 1fr;
+  gap: 8px;
+}
+
+.eixo-y {
+  position: relative;
+  height: 180px;
+}
+
+.eixo-y span {
+  position: absolute;
+  right: 0;
+  transform: translateY(50%);
+  font-size: 0.75rem;
+  color: #898781;
+  font-variant-numeric: tabular-nums;
+}
+
+.area-colunas {
+  position: relative;
+  height: 180px;
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: 1fr;
+  border-bottom: 1px solid var(--borda-forte);
+}
+
+.area-colunas .linha-grade {
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 0;
+  border-top: 1px solid var(--borda);
+}
+
+.mes-grupo {
+  position: relative;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  gap: 2px; /* respiro de 2px entre as duas colunas */
+  height: 100%;
+}
+
+.coluna {
+  width: 20px;
+  min-height: 2px;
+  border-radius: 4px 4px 0 0; /* topo arredondado, base reta */
+  outline-offset: 2px;
+}
+
+.coluna.entrada {
+  background: var(--serie-entrada);
+}
+
+.coluna.saida {
+  background: var(--serie-saida);
+}
+
+.rotulos-meses {
+  grid-column: 2;
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: 1fr;
+  margin-top: -2px;
+  text-align: center;
+  font-size: 0.75rem;
+  color: var(--texto-suave);
+}
+
+.nota-grafico {
+  margin: 8px 0 0;
+  font-size: 0.75rem;
+  color: var(--texto-suave);
+}
+
+.barra:hover,
+.barra:focus-visible,
+.coluna:hover,
+.coluna:focus-visible {
+  outline: 2px solid var(--tinta);
+}
+
+/* Tabela alternativa dos meses (para quem prefere números ou usa leitor de tela) */
+details.ver-tabela {
+  margin-top: 12px;
+  font-size: 0.8125rem;
+  color: var(--texto-suave);
+}
+
+details.ver-tabela summary {
+  cursor: pointer;
+  width: fit-content;
+}
+
+details.ver-tabela .tabela-wrap {
+  margin-top: 8px;
+  box-shadow: none;
+}
+
+.cabecalho-painel {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+
+.cabecalho-painel .titulo-secao {
+  margin: 0;
+}
+
+.cabecalho-painel a {
+  font-size: 0.875rem;
+}
+
+/* Dica ao passar o mouse ou focar (só CSS; os mesmos números estão em "Ver como tabela") */
+.com-dica {
+  position: relative;
+}
+
+.com-dica::after {
+  content: attr(data-dica);
+  position: absolute;
+  z-index: 20;
+  bottom: calc(100% + 8px);
+  left: 50%;
+  transform: translateX(-50%);
+  width: max-content;
+  max-width: 220px;
+  padding: 8px 10px;
+  background: var(--tinta);
+  border-radius: 8px;
+  color: #fff;
+  font-size: 0.8125rem;
+  font-weight: 400;
+  line-height: 1.4;
+  text-align: left;
+  white-space: pre-line;
+  box-shadow: 0 4px 14px rgba(15, 23, 42, 0.25);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.12s;
+}
+
+.com-dica:hover::after,
+.com-dica:focus-visible::after {
+  opacity: 1;
+}
+
+.com-dica.dica-esq::after,
+.barras-categoria .barra.com-dica::after {
+  left: 0;
+  transform: none;
+}
+
+.com-dica.dica-dir::after {
+  left: auto;
+  right: 0;
+  transform: none;
+}
+
+.painel .tabela-wrap {
+  box-shadow: none;
+}
+
+.suave-texto {
+  margin: 0;
+  color: var(--texto-suave);
+}
