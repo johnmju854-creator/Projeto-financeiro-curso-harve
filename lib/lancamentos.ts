@@ -11,7 +11,7 @@ import {
 
 // Colunas da tabela lancamentos + o nome da categoria (relação categoria_id -> categorias)
 const COLUNAS =
-  "id, tipo, valor, data_lancamento, descricao, categoria_id, conta_id, categorias(nome)";
+  "id, tipo, valor, data_lancamento, descricao, categoria_id, conta_id, categorias(nome, cor)";
 
 // Converte as linhas do banco; linha inválida é descartada com aviso no terminal do servidor
 function lerLinhas(linhas: Record<string, unknown>[] | null): LancamentoComCategoria[] {

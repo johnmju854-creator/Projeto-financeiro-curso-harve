@@ -2,12 +2,13 @@
 
 // Componente de cliente: importa só de lancamentos-utils (parte pura), nunca dos dados do servidor.
 import { useDeferredValue, useMemo, useState } from "react";
-import { LancamentoCard } from "@/components/lancamento-card";
+import { TabelaLancamentos } from "@/components/tabela-lancamentos";
 import {
   FiltroTipo,
   LancamentoComCategoria,
   filtrarLancamentos,
   formatarValor,
+  totalDeEntradas,
   totalDeSaidas,
 } from "@/lib/lancamentos-utils";
 
@@ -15,18 +16,12 @@ type LancamentosFiltradosProps = {
   lancamentos: LancamentoComCategoria[];
 };
 
-// Cada clique no botão passa para o próximo filtro: tudo → entradas → saídas → tudo
-const proximoFiltro: Record<FiltroTipo, FiltroTipo> = {
-  todos: "entrada",
-  entrada: "saida",
-  saida: "todos",
-};
-
-const nomeDoFiltro: Record<FiltroTipo, string> = {
-  todos: "Tudo",
-  entrada: "Só entradas",
-  saida: "Só saídas",
-};
+// As abas que a pessoa vê (o valor interno continua "todos", "entrada" e "saida")
+const ABAS: { valor: FiltroTipo; nome: string }[] = [
+  { valor: "todos", nome: "Todos" },
+  { valor: "entrada", nome: "Entradas" },
+  { valor: "saida", nome: "Saídas" },
+];
 
 export function LancamentosFiltrados({ lancamentos }: LancamentosFiltradosProps) {
   const [busca, setBusca] = useState("");
@@ -35,16 +30,32 @@ export function LancamentosFiltrados({ lancamentos }: LancamentosFiltradosProps)
   // O campo de texto responde na hora; o filtro acompanha logo em seguida (mantém a digitação leve)
   const buscaAdiada = useDeferredValue(busca);
 
-  // Só refaz o filtro e a soma quando algo muda de verdade
+  // Só refaz o filtro e as somas quando algo muda de verdade
   const visiveis = useMemo(
     () => filtrarLancamentos(lancamentos, buscaAdiada, tipo),
     [lancamentos, buscaAdiada, tipo],
   );
-  const total = useMemo(() => totalDeSaidas(visiveis), [visiveis]);
+  const totalSaidas = useMemo(() => totalDeSaidas(visiveis), [visiveis]);
+  const totalEntradas = useMemo(() => totalDeEntradas(visiveis), [visiveis]);
+
+  const mostraEntradas = tipo !== "saida";
+  const mostraSaidas = tipo !== "entrada";
 
   return (
     <div>
-      <div className="filtros">
+      <div className="barra-filtros">
+        <div className="segmentos" role="group" aria-label="Mostrar">
+          {ABAS.map((aba) => (
+            <button
+              key={aba.valor}
+              type="button"
+              aria-pressed={tipo === aba.valor}
+              onClick={() => setTipo(aba.valor)}
+            >
+              {aba.nome}
+            </button>
+          ))}
+        </div>
         <input
           type="search"
           aria-label="Buscar pela descrição"
@@ -52,28 +63,42 @@ export function LancamentosFiltrados({ lancamentos }: LancamentosFiltradosProps)
           value={busca}
           onChange={(e) => setBusca(e.target.value)}
         />
-        <button type="button" onClick={() => setTipo(proximoFiltro[tipo])}>
-          Mostrando: {nomeDoFiltro[tipo]}
-        </button>
       </div>
 
-      {/* aria-live: leitores de tela avisam quando o total muda */}
-      <p className="total" aria-live="polite">
-        Total de saídas: <strong>{formatarValor(total)}</strong>
-      </p>
+      {/* aria-live: leitores de tela avisam quando os totais mudam */}
+      <div className="totais" aria-live="polite">
+        {mostraEntradas && (
+          <p className="total entrada">
+            Total de entradas<strong>{formatarValor(totalEntradas)}</strong>
+          </p>
+        )}
+        {mostraSaidas && (
+          <p className="total">
+            Total de saídas<strong>{formatarValor(totalSaidas)}</strong>
+          </p>
+        )}
+      </div>
 
       {visiveis.length === 0 ? (
-        <p>
-          {lancamentos.length === 0
-            ? "Você ainda não tem nenhum lançamento."
-            : "Nenhum lançamento encontrado com esse filtro."}
-        </p>
+        <div className="vazio">
+          <p>
+            {lancamentos.length === 0
+              ? "Você ainda não tem nenhum lançamento."
+              : "Nenhum lançamento encontrado com esse filtro."}
+          </p>
+        </div>
       ) : (
-        <ul className="lista">
-          {visiveis.map((l) => (
-            <LancamentoCard key={l.id} dados={l} />
-          ))}
-        </ul>
+        <>
+          {tipo !== "todos" && (
+            <h2 className="titulo-secao">
+              {tipo === "entrada" ? "Entradas" : "Saídas"}
+              <small>
+                {visiveis.length} {visiveis.length === 1 ? "lançamento" : "lançamentos"}
+              </small>
+            </h2>
+          )}
+          <TabelaLancamentos lancamentos={visiveis} mostrarSinal={tipo === "todos"} />
+        </>
       )}
     </div>
   );

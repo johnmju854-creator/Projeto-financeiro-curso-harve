@@ -39,6 +39,18 @@ export function FormularioCategoria({
         </p>
       )}
 
+      <fieldset className="escolha">
+        <legend>Saída ou entrada</legend>
+        <label>
+          <input type="radio" name="tipo" value="saida" defaultChecked={v.tipo !== "entrada"} />
+          <span>Saída</span>
+        </label>
+        <label>
+          <input type="radio" name="tipo" value="entrada" defaultChecked={v.tipo === "entrada"} />
+          <span>Entrada</span>
+        </label>
+      </fieldset>
+
       <label>
         Nome
         <input
@@ -49,14 +61,6 @@ export function FormularioCategoria({
           defaultValue={v.nome}
           placeholder="Ex.: Pet"
         />
-      </label>
-
-      <label>
-        Tipo
-        <select name="tipo" required defaultValue={v.tipo}>
-          <option value="saida">Saída</option>
-          <option value="entrada">Entrada</option>
-        </select>
       </label>
 
       <label>

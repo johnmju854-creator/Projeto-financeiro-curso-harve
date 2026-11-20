@@ -17,7 +17,13 @@ export type Lancamento = {
   contaId?: IdBanco; // em qual conta foi lançado (usado na tela de editar)
 };
 
-export type CategoriaResumo = { id: IdBanco; nome: string };
+// cor: "#RRGGBB" escolhida na categoria (opcional; só vem se for um valor válido)
+export type CategoriaResumo = { id: IdBanco; nome: string; cor?: string };
+
+// Texto que a pessoa vê (nunca mostramos a palavra "tipo" nem o valor cru do banco)
+export function rotuloTipo(tipo: TipoLancamento): string {
+  return tipo === "entrada" ? "Entrada" : "Saída";
+}
 
 // Lançamento já com o nome da categoria resolvido no servidor (dados simples, fáceis de enviar ao cliente)
 export type LancamentoComCategoria = Lancamento & { categoria?: CategoriaResumo };
@@ -86,13 +92,17 @@ export function lerLinhaDoBanco(linha: Record<string, unknown>): LancamentoComCa
 
   // O Supabase devolve a categoria embutida como objeto (ou lista, dependendo da relação)
   const embutida = Array.isArray(linha.categorias) ? linha.categorias[0] : linha.categorias;
-  const nome =
+  const dadosDaCategoria =
     embutida && typeof embutida === "object"
-      ? (embutida as { nome?: unknown }).nome
+      ? (embutida as { nome?: unknown; cor?: unknown })
       : undefined;
+  const nome = dadosDaCategoria?.nome;
+  const cor = dadosDaCategoria?.cor;
 
   if (lancamento.categoriaId !== undefined && typeof nome === "string" && nome.trim() !== "") {
-    return { ...lancamento, categoria: { id: lancamento.categoriaId, nome } };
+    const categoria: CategoriaResumo = { id: lancamento.categoriaId, nome };
+    if (typeof cor === "string" && /^#[0-9A-Fa-f]{6}$/.test(cor)) categoria.cor = cor;
+    return { ...lancamento, categoria };
   }
   return lancamento;
 }
@@ -122,8 +132,17 @@ export function filtrarLancamentos<T extends Lancamento>(
 // Soma em centavos para evitar erros de ponto flutuante (0.1 + 0.2).
 // Valores que não são número (NaN, Infinity) são ignorados, para nunca mostrar "R$ NaN".
 export function totalDeSaidas(lista: Lancamento[]): number {
+  return somaDoTipo(lista, "saida");
+}
+
+// O mesmo para as entradas (só entradas entram na soma)
+export function totalDeEntradas(lista: Lancamento[]): number {
+  return somaDoTipo(lista, "entrada");
+}
+
+function somaDoTipo(lista: Lancamento[], tipo: TipoLancamento): number {
   const centavos = lista
-    .filter((l) => l.tipo === "saida" && Number.isFinite(l.valor))
+    .filter((l) => l.tipo === tipo && Number.isFinite(l.valor))
     .reduce((soma, l) => soma + Math.round(l.valor * 100), 0);
   return centavos / 100;
 }

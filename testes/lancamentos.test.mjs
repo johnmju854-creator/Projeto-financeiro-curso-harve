@@ -17,6 +17,8 @@ import {
   hojeISO,
   idDaUrlValido,
   lerItemComNome,
+  rotuloTipo,
+  totalDeEntradas,
 } from "../lib/lancamentos-utils.ts";
 
 // Linhas como o Supabase devolve (colunas do banco + categoria embutida)
@@ -232,4 +234,26 @@ test("valorParaCampo, hojeISO, idDaUrlValido e lerItemComNome", () => {
 test("lerLinhaDoBanco traz a conta do lancamento (para a tela de editar)", () => {
   const l = lerLinhaDoBanco({ ...linhas[0], conta_id: 9 });
   assert.equal(l.contaId, 9);
+});
+
+// ---- Visual da usuária: "Saída"/"Entrada", total de entradas e cor da categoria ----
+
+test("rotuloTipo mostra Saída e Entrada (nunca o valor cru do banco)", () => {
+  assert.equal(rotuloTipo("saida"), "Saída");
+  assert.equal(rotuloTipo("entrada"), "Entrada");
+});
+
+test("totalDeEntradas soma só as entradas (e totalDeSaidas continua só saídas)", () => {
+  const validos = lista.filter((l) => l !== null);
+  assert.equal(totalDeEntradas(validos), 2056.74); // 856,74 + 1200
+  assert.equal(totalDeSaidas(validos), 2904.45);
+  assert.equal(totalDeEntradas([]), 0);
+});
+
+test("lerLinhaDoBanco traz a cor da categoria só se for #RRGGBB válido", () => {
+  const base = { ...linhas[0], categorias: { nome: "Mercado", cor: "#2E7D32" } };
+  assert.equal(lerLinhaDoBanco(base)?.categoria?.cor, "#2E7D32");
+  const ruim = lerLinhaDoBanco({ ...base, categorias: { nome: "Mercado", cor: "azul" } });
+  assert.equal(ruim?.categoria?.nome, "Mercado");
+  assert.equal(ruim?.categoria?.cor, undefined);
 });

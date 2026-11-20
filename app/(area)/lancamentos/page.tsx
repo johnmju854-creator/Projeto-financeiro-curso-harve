@@ -14,12 +14,14 @@ export default async function LancamentosPage() {
 
   return (
     <section>
-      <h1>Lançamentos</h1>
-      <p>
-        <Link href="/lancamentos/novo" className="link-botao">
-          + Novo lançamento
-        </Link>
-      </p>
+      <div className="cabecalho-pagina">
+        <h1>Lançamentos</h1>
+        <p>
+          <Link href="/lancamentos/novo" className="link-botao">
+            + Novo lançamento
+          </Link>
+        </p>
+      </div>
       <LancamentosFiltrados lancamentos={lancamentos} />
     </section>
   );

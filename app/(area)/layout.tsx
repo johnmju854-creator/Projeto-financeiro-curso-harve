@@ -1,4 +1,4 @@
-import Link from "next/link";
+import { MenuLink } from "@/components/menu-link";
 import { obterUsuario } from "@/lib/auth";
 import { sair } from "./login/actions";
 
@@ -14,9 +14,11 @@ export default async function AreaLayout({
     <>
       {usuario && (
         <nav className="menu">
-          <Link href="/lancamentos">Lançamentos</Link>
-          <Link href="/categorias">Categorias</Link>
-          <Link href="/dashboard">Dashboard</Link>
+          <MenuLink href="/lancamentos">Lançamentos</MenuLink>
+          <MenuLink href="/categorias" tambem={["/categoria"]}>
+            Categorias
+          </MenuLink>
+          <MenuLink href="/dashboard">Dashboard</MenuLink>
           <form action={sair}>
             <button type="submit">Sair</button>
           </form>

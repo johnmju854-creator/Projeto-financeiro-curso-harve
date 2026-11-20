@@ -1,230 +1,804 @@
+/* Caderneta da Claudia — visual moderno e harmonizado (só CSS, os componentes não mudam).
+
+   Referências: escala de texto do Material Design 3 e do Tailwind (corpo 14-15px, título ~24px),
+   paleta cinza-azulada do Tailwind (slate), espaçamento em múltiplos de 8px e números de largura
+   fixa (tabular-nums), como nos apps de finanças.
+
+   Regras: UMA cor de acento (índigo) só para ações; o resto é neutro. A ênfase vem do tamanho e do
+   peso da letra, sem exagero: título 24px, total 28px, texto 15px, detalhes 13px. */
+
+:root {
+  --tinta: #0f172a; /* títulos e valores */
+  --texto: #334155;
+  --texto-suave: #64748b;
+  --fundo: #f8fafc;
+  --branco: #ffffff;
+  --borda: #e2e8f0;
+  --borda-forte: #cbd5e1;
+  --hover: #f1f5f9;
+  --acento: #4f46e5;
+  --acento-escuro: #4338ca;
+  --verde: #059669;
+  --vermelho: #e11d48;
+  --vermelho-escuro: #be123c;
+  --vermelho-claro: #fff1f2;
+  --raio: 12px;
+  --sombra: 0 1px 2px rgba(15, 23, 42, 0.06);
+}
+
 body {
-  font-family: system-ui, sans-serif;
+  font-family: system-ui, "Segoe UI", Roboto, sans-serif;
+  font-size: 0.9375rem; /* 15px */
   margin: 0;
-  color: #1f2937;
-  background: #f9fafb;
+  color: var(--texto);
+  background: var(--fundo);
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
 }
 
 main,
 .conteudo {
   max-width: 640px;
   margin: 0 auto;
-  padding: 24px 16px;
+  padding: 24px 16px 48px;
 }
 
+/* ---------- Títulos ---------- */
+h1 {
+  margin: 0 0 16px;
+  font-size: 1.5rem; /* 24px */
+  line-height: 1.25;
+  font-weight: 700;
+  letter-spacing: -0.015em;
+  color: var(--tinta);
+}
+
+h2 {
+  margin: 24px 0 8px;
+  font-size: 1rem; /* 16px */
+  font-weight: 600;
+  color: var(--tinta);
+}
+
+p {
+  margin: 0 0 12px;
+}
+
+a {
+  color: var(--acento);
+  text-underline-offset: 3px;
+}
+
+a:hover {
+  color: var(--acento-escuro);
+}
+
+:focus-visible {
+  outline: 2px solid var(--acento);
+  outline-offset: 2px;
+}
+
+/* ---------- Menu: claro e leve ---------- */
 .menu {
   display: flex;
-  gap: 16px;
-  padding: 12px 16px;
-  background: #1e3a8a;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 4px;
+  padding: 8px 16px;
+  background: var(--branco);
+  border-bottom: 1px solid var(--borda);
+  font-size: 0.875rem; /* 14px */
+}
+
+.menu::before {
+  content: "Caderneta da Claudia";
+  margin-right: 16px;
+  font-weight: 700;
+  color: var(--tinta);
 }
 
 .menu a {
-  color: #fff;
+  color: var(--texto-suave);
+  font-weight: 500;
   text-decoration: none;
+  padding: 6px 12px;
+  border-radius: 8px;
 }
 
+.menu a:hover {
+  background: var(--hover);
+  color: var(--tinta);
+}
+
+.menu form {
+  margin: 0 0 0 auto;
+}
+
+.menu button {
+  padding: 6px 12px;
+  border: 1px solid var(--borda);
+  border-radius: 8px;
+  background: var(--branco);
+  color: var(--texto);
+  font: inherit;
+  font-weight: 500;
+  cursor: pointer;
+}
+
+.menu button:hover {
+  background: var(--hover);
+}
+
+/* ---------- Listas e cartões ---------- */
 .lista {
   list-style: none;
   padding: 0;
+  margin: 0;
   display: grid;
-  gap: 12px;
+  gap: 8px;
 }
 
 .card {
   display: grid;
-  gap: 4px;
+  gap: 2px;
   padding: 12px 16px;
-  background: #fff;
-  border: 1px solid #e5e7eb;
-  border-radius: 8px;
+  background: var(--branco);
+  border: 1px solid var(--borda);
+  border-radius: var(--raio);
+  box-shadow: var(--sombra);
+}
+
+.card small {
+  font-size: 0.8125rem; /* 13px */
+  color: var(--texto-suave);
+}
+
+.card a strong {
+  font-weight: 600;
+  color: var(--tinta);
+}
+
+/* Entrada/saída: informam com cor, sem gritar */
+.entrada,
+.saida {
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
 }
 
 .entrada {
-  color: #15803d;
+  color: var(--verde);
 }
 
 .saida {
-  color: #b91c1c;
+  color: var(--vermelho);
 }
 
+/* ---------- Filtros e total ---------- */
 .filtros {
   display: flex;
   gap: 8px;
-  margin-bottom: 16px;
+  margin-bottom: 12px;
 }
 
 .filtros input {
   flex: 1;
-  padding: 8px;
-  border: 1px solid #d1d5db;
-  border-radius: 6px;
+  min-width: 0;
+  padding: 8px 12px;
+  border: 1px solid var(--borda-forte);
+  border-radius: 8px;
+  background: var(--branco);
+  font: inherit;
+  color: var(--tinta);
 }
 
 .filtros button {
   padding: 8px 12px;
-  border: 0;
-  border-radius: 6px;
-  background: #1e3a8a;
-  color: #fff;
+  border: 1px solid var(--borda-forte);
+  border-radius: 8px;
+  background: var(--branco);
+  color: var(--tinta);
+  font: inherit;
+  font-weight: 500;
   cursor: pointer;
+}
+
+.filtros button:hover {
+  background: var(--hover);
 }
 
 .total {
   margin: 0 0 16px;
+  padding: 12px 16px;
+  background: var(--branco);
+  border: 1px solid var(--borda);
+  border-radius: var(--raio);
+  box-shadow: var(--sombra);
+  font-size: 0.8125rem; /* 13px */
+  color: var(--texto-suave);
 }
 
-.menu form {
-  margin-left: auto;
+.total strong {
+  display: block;
+  font-size: 1.75rem; /* 28px */
+  line-height: 1.2;
+  font-weight: 700;
+  letter-spacing: -0.015em;
+  font-variant-numeric: tabular-nums;
+  color: var(--tinta);
 }
 
-.menu button {
-  padding: 4px 12px;
-  border: 1px solid #fff;
-  border-radius: 6px;
-  background: transparent;
-  color: #fff;
-  cursor: pointer;
-}
-
+/* ---------- Formulários ---------- */
 .login {
   max-width: 360px;
   margin: 0 auto;
+  padding: 24px;
+  background: var(--branco);
+  border: 1px solid var(--borda);
+  border-radius: 16px;
+  box-shadow: var(--sombra);
 }
 
-.form-login {
+.form-login,
+.form-lancamento {
   display: grid;
-  gap: 12px;
-}
-
-.form-login label {
-  display: grid;
-  gap: 4px;
-}
-
-.form-login input {
-  padding: 8px;
-  border: 1px solid #d1d5db;
-  border-radius: 6px;
-}
-
-.form-login-botoes {
-  display: flex;
-  gap: 8px;
-}
-
-.login button {
-  padding: 8px 12px;
-  border: 0;
-  border-radius: 6px;
-  background: #1e3a8a;
-  color: #fff;
-  cursor: pointer;
-}
-
-.login button.secundario {
-  background: #e5e7eb;
-  color: #1f2937;
-}
-
-.erro {
-  color: #b91c1c;
-}
-
-.aviso {
-  color: #15803d;
-}
-
-.link-botao {
-  display: inline-block;
-  padding: 8px 12px;
-  border-radius: 6px;
-  background: #1e3a8a;
-  color: #fff;
-  text-decoration: none;
-}
-
-.link-botao.secundario {
-  background: #e5e7eb;
-  color: #1f2937;
+  gap: 16px;
 }
 
 .form-lancamento {
-  display: grid;
-  gap: 12px;
   max-width: 420px;
 }
 
+.form-login label,
 .form-lancamento label {
   display: grid;
   gap: 4px;
+  font-size: 0.875rem; /* 14px */
+  font-weight: 500;
+  color: var(--tinta);
 }
 
+.form-login input,
 .form-lancamento input,
 .form-lancamento select {
-  padding: 8px;
-  border: 1px solid #d1d5db;
-  border-radius: 6px;
+  padding: 8px 12px;
+  border: 1px solid var(--borda-forte);
+  border-radius: 8px;
+  background: var(--branco);
+  color: var(--tinta);
   font: inherit;
+  font-weight: 400;
 }
 
+.form-login input:focus,
+.form-lancamento input:focus,
+.form-lancamento select:focus,
+.filtros input:focus {
+  outline: none;
+  border-color: var(--acento);
+  box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.15);
+}
+
+.form-login-botoes,
 .form-lancamento-botoes {
   display: flex;
   gap: 8px;
   align-items: center;
 }
 
+/* ---------- Botões: principal no acento, os outros neutros ---------- */
+.login button,
 .form-lancamento button,
 .confirmar-exclusao button,
-button.perigo {
-  padding: 8px 12px;
-  border: 0;
-  border-radius: 6px;
-  background: #1e3a8a;
+button.perigo,
+.link-botao {
+  display: inline-block;
+  padding: 8px 16px;
+  border: 1px solid transparent;
+  border-radius: 8px;
+  background: var(--acento);
   color: #fff;
+  font: inherit;
+  font-size: 0.875rem; /* 14px */
+  font-weight: 600;
+  text-decoration: none;
   cursor: pointer;
+}
+
+.login button:hover,
+.form-lancamento button:hover,
+.confirmar-exclusao button:hover,
+.link-botao:hover {
+  background: var(--acento-escuro);
+  color: #fff;
 }
 
 .form-lancamento button:disabled,
 .confirmar-exclusao button:disabled {
-  opacity: 0.6;
+  opacity: 0.55;
   cursor: not-allowed;
 }
 
 button.perigo {
-  background: #b91c1c;
+  background: var(--vermelho);
 }
 
+.confirmar-exclusao button.perigo:hover,
+button.perigo:hover {
+  background: var(--vermelho-escuro);
+}
+
+.login button.secundario,
+.link-botao.secundario,
 button.secundario {
-  background: #e5e7eb;
-  color: #1f2937;
+  background: var(--branco);
+  color: var(--tinta);
+  border-color: var(--borda-forte);
+}
+
+.login button.secundario:hover,
+.link-botao.secundario:hover,
+button.secundario:hover {
+  background: var(--hover);
+  color: var(--tinta);
 }
 
 .confirmar-exclusao {
   display: grid;
   gap: 8px;
   max-width: 420px;
+  padding: 12px 16px;
+  border: 1px solid var(--borda);
+  border-radius: var(--raio);
+  background: var(--branco);
+  box-shadow: var(--sombra);
 }
 
-/* Categorias: bolinha de cor, tipo e campo de cor */
+.confirmar-exclusao p {
+  margin: 0;
+}
+
+/* ---------- Mensagens ---------- */
+.erro,
+.aviso {
+  padding: 8px 12px;
+  border-radius: 8px;
+  margin: 0;
+  font-size: 0.875rem; /* 14px */
+}
+
+/* Mensagens no estilo padrão do app (mesmo visual de um cartão), sem cor de alerta */
+.erro,
+.aviso {
+  color: var(--tinta);
+  background: var(--branco);
+  border: 1px solid var(--borda);
+  box-shadow: var(--sombra);
+}
+
+/* ---------- Categorias ---------- */
 .card-categoria {
   display: flex;
   align-items: center;
-  gap: 0.75rem;
+  gap: 12px;
 }
+
+/* A bolinha é a cor que a pessoa escolheu */
 .bolinha-cor {
-  width: 1rem;
-  height: 1rem;
+  width: 16px;
+  height: 16px;
   border-radius: 50%;
-  border: 1px solid rgba(0, 0, 0, 0.25);
+  box-shadow: inset 0 0 0 1px rgba(15, 23, 42, 0.15);
   flex-shrink: 0;
 }
+
 .tipo-categoria {
   margin-left: auto;
-  font-size: 0.9rem;
+  padding: 2px 8px;
+  border: 1px solid var(--borda);
+  border-radius: 999px;
+  font-size: 0.75rem; /* 12px */
+  font-weight: 500;
+  color: var(--texto-suave);
 }
+
+.card-categoria .link-botao {
+  padding: 4px 12px;
+  font-size: 0.8125rem; /* 13px */
+}
+
 .campo-cor {
   display: flex;
   align-items: center;
-  gap: 0.5rem;
+  gap: 8px;
+}
+
+.campo-cor input[type="color"] {
+  width: 40px;
+  height: 36px;
+  padding: 2px;
+  cursor: pointer;
+}
+
+.campo-cor input[type="text"] {
+  flex: 1;
+  min-width: 0;
+}
+
+/* =====================================================================
+   TELAS DA USUÁRIA: tabelas limpas (lançamentos e categorias) e detalhe.
+   As telas de editar/novo continuam simples (formulários acima).
+   ===================================================================== */
+
+.conteudo {
+  max-width: 880px;
+}
+
+/* Cabeçalho da página: título à esquerda, ação principal à direita */
+.cabecalho-pagina {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.cabecalho-pagina h1 {
+  margin: 0;
+}
+
+.cabecalho-pagina p {
+  margin: 0;
+}
+
+/* Menu: página atual marcada */
+.menu a[aria-current="page"] {
+  background: var(--hover);
+  color: var(--tinta);
+}
+
+/* Tabela dentro de um cartão */
+.tabela-wrap {
+  overflow-x: auto;
+  background: var(--branco);
+  border: 1px solid var(--borda);
+  border-radius: var(--raio);
+  box-shadow: var(--sombra);
+}
+
+.tabela {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.875rem; /* 14px */
+}
+
+.tabela th {
+  padding: 10px 16px;
+  text-align: left;
+  font-size: 0.75rem; /* 12px */
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--texto-suave);
+  background: var(--fundo);
+  border-bottom: 1px solid var(--borda);
+  white-space: nowrap;
+}
+
+.tabela td {
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--borda);
+  vertical-align: middle;
+  color: var(--tinta);
+}
+
+.tabela tbody tr:last-child td {
+  border-bottom: 0;
+}
+
+.tabela tbody tr:hover td {
+  background: var(--fundo);
+}
+
+.tabela .data,
+.tabela .suave {
+  color: var(--texto-suave);
+  white-space: nowrap;
+}
+
+.tabela .data {
+  font-variant-numeric: tabular-nums;
+}
+
+.tabela .direita {
+  text-align: right;
+}
+
+.tabela td.valor {
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+  text-align: right;
+}
+
+/* Entrada em verde; saída na cor normal (menos cor, mais calma) */
+.tabela td.valor.entrada {
+  color: var(--verde);
+}
+
+.tabela td.valor.saida {
+  color: var(--tinta);
+}
+
+.tabela .acoes {
+  text-align: right;
+  white-space: nowrap;
+}
+
+.tabela .acoes a {
+  font-weight: 500;
+  text-decoration: none;
+}
+
+.tabela .acoes a:hover {
+  text-decoration: underline;
+}
+
+.tabela td a.nome {
+  color: var(--tinta);
+  font-weight: 500;
+  text-decoration: none;
+}
+
+.tabela td a.nome:hover {
+  color: var(--acento);
+}
+
+/* Categoria na tabela: bolinha + nome */
+.categoria-celula {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* Estado vazio, com convite para o primeiro passo */
+.vazio {
+  padding: 32px 16px;
+  text-align: center;
+  background: var(--branco);
+  border: 1px dashed var(--borda-forte);
+  border-radius: var(--raio);
+  color: var(--texto-suave);
+}
+
+.vazio p {
+  margin: 0 0 12px;
+}
+
+/* Detalhe de um lançamento: pares "rótulo / valor" */
+.detalhes {
+  margin: 0 0 16px;
+  padding: 4px 16px;
+  background: var(--branco);
+  border: 1px solid var(--borda);
+  border-radius: var(--raio);
+  box-shadow: var(--sombra);
+}
+
+.detalhes div {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 12px 0;
+  border-bottom: 1px solid var(--borda);
+}
+
+.detalhes div:last-child {
+  border-bottom: 0;
+}
+
+.detalhes dt {
+  color: var(--texto-suave);
+}
+
+.detalhes dd {
+  margin: 0;
+  font-weight: 500;
+  color: var(--tinta);
+  text-align: right;
+}
+
+.acoes-pagina {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 16px;
+}
+
+/* Telas estreitas: some a coluna de categoria para a tabela caber */
+@media (max-width: 560px) {
+  .tabela .esconde-celular {
+    display: none;
+  }
+  .tabela th,
+  .tabela td {
+    padding-left: 12px;
+    padding-right: 12px;
+  }
+}
+
+/* =====================================================================
+   SAÍDA x ENTRADA: sem a palavra "tipo". A pessoa escolhe "Saída" ou "Entrada",
+   e cada espaço diz claramente o que está mostrando.
+   ===================================================================== */
+
+/* Abas: Tudo | Entradas | Saídas (no lugar do botão "Mostrando: ...") */
+.segmentos {
+  display: inline-flex;
+  gap: 2px;
+  padding: 3px;
+  background: var(--hover);
+  border: 1px solid var(--borda);
+  border-radius: 10px;
+}
+
+.segmentos button {
+  padding: 6px 14px;
+  border: 0;
+  border-radius: 8px;
+  background: transparent;
+  color: var(--texto-suave);
+  font: inherit;
+  font-size: 0.875rem;
+  font-weight: 500;
+  cursor: pointer;
+}
+
+.segmentos button:hover {
+  color: var(--tinta);
+}
+
+.segmentos button[aria-pressed="true"] {
+  background: var(--branco);
+  color: var(--tinta);
+  font-weight: 600;
+  box-shadow: var(--sombra);
+}
+
+.barra-filtros {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 16px;
+}
+
+.barra-filtros input {
+  flex: 1;
+  min-width: 180px;
+  padding: 8px 12px;
+  border: 1px solid var(--borda-forte);
+  border-radius: 8px;
+  background: var(--branco);
+  font: inherit;
+  color: var(--tinta);
+}
+
+/* Totais: cada um diz o que é. Em "Tudo" aparecem os dois lado a lado. */
+.totais {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 8px;
+  margin-bottom: 16px;
+}
+
+.totais .total {
+  margin: 0;
+}
+
+.totais .total.entrada strong {
+  color: var(--verde);
+}
+
+/* Título de cada espaço (ex.: "Saídas", "Categorias de entrada") */
+.titulo-secao {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 8px;
+  margin: 0 0 8px;
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--tinta);
+}
+
+.titulo-secao small {
+  font-size: 0.8125rem;
+  font-weight: 400;
+  color: var(--texto-suave);
+}
+
+.secao + .secao {
+  margin-top: 24px;
+}
+
+/* Escolha de Saída/Entrada nos formulários (sem a palavra "tipo") */
+.escolha {
+  display: inline-flex;
+  gap: 2px;
+  margin: 0;
+  padding: 3px;
+  border: 1px solid var(--borda);
+  border-radius: 10px;
+  background: var(--hover);
+  width: fit-content;
+}
+
+.escolha legend {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+}
+
+.form-lancamento .escolha label {
+  display: block;
+  position: relative;
+  gap: 0;
+}
+
+.escolha input {
+  position: absolute;
+  opacity: 0;
+  inset: 0;
+  cursor: pointer;
+}
+
+.escolha span {
+  display: block;
+  padding: 6px 20px;
+  border-radius: 8px;
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--texto-suave);
+}
+
+.escolha input:checked + span {
+  background: var(--branco);
+  color: var(--tinta);
+  font-weight: 600;
+  box-shadow: var(--sombra);
+}
+
+.escolha input:focus-visible + span {
+  outline: 2px solid var(--acento);
+  outline-offset: 2px;
+}
+
+/* Selo "Saída" / "Entrada" ao lado do título do detalhe */
+.selo {
+  display: inline-block;
+  margin-left: 8px;
+  padding: 2px 10px;
+  border: 1px solid var(--borda);
+  border-radius: 999px;
+  background: var(--branco);
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0;
+  vertical-align: middle;
+  color: var(--texto-suave);
+}
+
+.selo.entrada {
+  color: var(--verde);
+}
+
+/* Texto só para leitores de tela (esconde visualmente, mas continua acessível) */
+.so-leitor {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
 }

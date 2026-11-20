@@ -56,9 +56,34 @@ Arquivos: `supabase-categorias-tipo-cor.sql` (NOVO, o John precisa rodar no SQL 
 `testes/categorias.test.mjs` (8 testes). Novo script `npm run verificar` (= `tsc --noEmit` + `npm test`): 29 testes passando.
 **Validado:** SQL rodado, "Pet" criada e cor trocada para #8E24AA, linha conferida no Supabase. Nada foi commitado ainda.
 
+**Visual novo (19/11):** `app/globals.css` reescrito (só CSS, componentes intactos), aplicado, ainda NÃO commitado. Moderno e discreto:
+uma só cor de acento (índigo `#4F46E5`) para ações, resto em cinza-azulado (slate); título 24px, total 28px, texto 15px, detalhes 13px;
+menu claro; mensagens de erro/aviso e caixa de excluir no estilo padrão (sem fundo vermelho; só o botão "Sim, excluir" é vermelho).
+Referências: Material Design 3, Tailwind. Prévia (privada): https://claude.ai/artifact/CkArTawdko7xFkzuAEW5wn. `npm run verificar`: 29 testes ok.
+Falta: o John conferir no `localhost:3000` (pode pedir ajustes de tamanho/cor).
+Obs.: o commit/push do 3571891 (categorias) já foi feito em 19/11 (`4ea2751..3571891`).
+
+**ONDE PARAMOS (fim da aula de 19/11):** visual novo commitado e enviado ao GitHub. O John AINDA NÃO conferiu o visual ao vivo
+(ligamos o `npm run dev` para ele ver, mas a aula acabou). Ao voltar: (1) ligar `npm run dev` e o John conferir as telas
+(`/login` → Lançamentos, Categorias, Novo lançamento, detalhe); ajustar o que incomodar; (2) seguir a publicação na Vercel
+(passos logo abaixo). Parar o dev antes de qualquer `npm run build`.
+**Telas da usuária em tabela (19/11) — APLICADO e commitado:** lançamentos e categorias em tabelas; sem a palavra "tipo"
+(abas Todos | Entradas | Saídas; categorias separadas em "de saída" e "de entrada"; escolha direta Saída/Entrada nos formulários;
+selo no detalhe); total de entradas e de saídas; menu marca a página atual (`components/menu-link.tsx`); novo
+`components/tabela-lancamentos.tsx`; removidos `lancamento-card.tsx` e `categoria-card.tsx`. Lançamentos agora trazem a cor da
+categoria (`categorias(nome, cor)`). `npm run verificar`: 32 testes ok. Falta o John conferir no `localhost:3000`.
+**Publicação (GitHub + Vercel + Supabase), passo a passo — em andamento (19/11):**
+- `npm run build` OK (12 rotas, sem erros); `.next` apagado depois. O John fechou o dev antes.
+- Repositório do GitHub é PÚBLICO (decisão do John: manter público por enquanto, é projeto de estudo; deixar privado depois).
+- Não há acesso à extensão do Chrome nesta sessão: o John faz os cliques nos painéis (Vercel/Supabase/GitHub) e eu guio. `gh` está logado.
+- Ordem: (1) commit+push do visual novo [FEITO]; (2) Vercel: importar o repo, variáveis `NEXT_PUBLIC_SUPABASE_URL` e
+  `NEXT_PUBLIC_SUPABASE_ANON_KEY` (chave publishable, NUNCA a secret; o John cola, eu não vejo); (3) Supabase > Authentication > URL
+  Configuration: Site URL = URL da Vercel + Redirect URLs `https://APP.vercel.app/**` (manter localhost); (4) testar login/lançamento/categoria
+  no site publicado e conferir que outra conta não vê os dados; (5) depois: repo privado, domínio, região, `npm audit`.
+
 ## Próximos passos (opções; um por vez, só com o ok do John)
 1. Tela para **cadastrar contas** (categorias já têm tela; contas hoje só pelo SQL ou Table Editor; o formulário "Novo" avisa quando não há conta).
-2. **Melhorar o visual** (hoje é o CSS básico do curso).
+2. ~~Melhorar o visual~~ (feito, falta o John conferir e commitar).
 3. **Próxima aula do curso:** o John manda o print/texto da aula.
 4. **Dashboard** de verdade (hoje é só "Em breve").
 5. Tabela `usuarios` + gatilho no cadastro (decidido NÃO por enquanto; o login guarda e-mail/senha por conta própria).

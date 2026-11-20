@@ -45,6 +45,19 @@ export function FormularioLancamento({
         </p>
       )}
 
+      {/* Escolha direta entre Saída e Entrada (o campo continua se chamando "tipo" por dentro) */}
+      <fieldset className="escolha">
+        <legend>Saída ou entrada</legend>
+        <label>
+          <input type="radio" name="tipo" value="saida" defaultChecked={v.tipo !== "entrada"} />
+          <span>Saída</span>
+        </label>
+        <label>
+          <input type="radio" name="tipo" value="entrada" defaultChecked={v.tipo === "entrada"} />
+          <span>Entrada</span>
+        </label>
+      </fieldset>
+
       <label>
         Descrição
         <input
@@ -67,14 +80,6 @@ export function FormularioLancamento({
           defaultValue={v.valor}
           placeholder="0,00"
         />
-      </label>
-
-      <label>
-        Tipo
-        <select name="tipo" required defaultValue={v.tipo}>
-          <option value="saida">Saída</option>
-          <option value="entrada">Entrada</option>
-        </select>
       </label>
 
       <label>
