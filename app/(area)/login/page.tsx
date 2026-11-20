@@ -1,6 +1,7 @@
-import Link from "next/link";
+import { redirect } from "next/navigation";
 import { obterUsuario } from "@/lib/auth";
-import { cadastrar, entrar, sair } from "./actions";
+import { destinoInicial } from "@/lib/rotas-utils";
+import { cadastrar, entrar } from "./actions";
 
 export const dynamic = "force-dynamic";
 
@@ -28,23 +29,9 @@ export default async function LoginPage({ searchParams }: Props) {
   const mensagemDeErro = erro ? MENSAGENS_DE_ERRO[erro] : undefined;
   const mensagemDeAviso = aviso ? MENSAGENS_DE_AVISO[aviso] : undefined;
 
-  // Já está logado: mostra quem é, com o botão de sair
-  if (usuario) {
-    return (
-      <section className="login">
-        <h1>Você já está logado</h1>
-        <p>
-          Conectado como <strong>{usuario.email}</strong>.
-        </p>
-        <p>
-          <Link href="/lancamentos">Ir para meus lançamentos</Link>
-        </p>
-        <form action={sair}>
-          <button type="submit">Sair</button>
-        </form>
-      </section>
-    );
-  }
+  // Já está logado: não faz sentido ver o login, vai direto para o painel
+  // (o redirect fica fora de try/catch, como o Next exige)
+  if (usuario) redirect(destinoInicial(true));
 
   return (
     <section className="login">

@@ -90,13 +90,6 @@ a:hover {
   font-size: 0.875rem; /* 14px */
 }
 
-.menu::before {
-  content: "Caderneta da Claudia";
-  margin-right: 16px;
-  font-weight: 700;
-  color: var(--tinta);
-}
-
 .menu a {
   color: var(--texto-suave);
   font-weight: 500;

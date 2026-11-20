@@ -1,13 +1,12 @@
-import Link from "next/link";
+import { redirect } from "next/navigation";
+import { obterUsuario } from "@/lib/auth";
+import { destinoInicial } from "@/lib/rotas-utils";
 
-export default function Home() {
-  return (
-    <main>
-      <h1>Caderneta da Claudia</h1>
-      <p>Um app simples para controlar suas entradas e saídas de dinheiro.</p>
-      <p>
-        <Link href="/lancamentos">Ver meus lançamentos</Link>
-      </p>
-    </main>
-  );
+// Cada visita depende de quem está logado, então nunca pode ser guardada pronta
+export const dynamic = "force-dynamic";
+
+// A página inicial não mostra nada: leva direto ao painel (logado) ou ao login (não logado)
+export default async function Home() {
+  const usuario = await obterUsuario();
+  redirect(destinoInicial(usuario !== null));
 }

@@ -81,6 +81,18 @@ categoria (`categorias(nome, cor)`). `npm run verificar`: 32 testes ok. Falta o 
   Configuration: Site URL = URL da Vercel + Redirect URLs `https://APP.vercel.app/**` (manter localhost); (4) testar login/lançamento/categoria
   no site publicado e conferir que outra conta não vê os dados; (5) depois: repo privado, domínio, região, `npm audit`.
 
+**Ajustes de 20/11 (NÃO commitados):** (1) quem já está logado e abre `/login` ou `/` vai direto para `/lancamentos` (removida a tela
+"Você já está logado"; `app/page.tsx` redireciona; regra pura em `lib/rotas-utils.ts` + `testes/rotas.test.mjs`); (2) removido o nome
+"Caderneta da Claudia" do canto do menu (`.menu::before` no `globals.css`). `npm run verificar`: 34 testes ok. O John ainda vai conferir
+logado. Pergunta aberta: manter o título "Entrar na Caderneta" na tela de login? Dev ligado em segundo plano (porta 3000) nesta sessão.
+O aviso do navegador "se sair algo pode se perder" no Supabase: provavelmente consulta aberta no SQL Editor; nada do projeto depende dele
+(SQL todos nos arquivos da pasta, código no GitHub).
+
+**Dados fictícios (20/11):** criado `supabase-dados-ficticios.sql` (4 contas, 15 categorias com tipo/cor, ~150 lançamentos nos últimos
+6 meses, valores variando por mês). O John precisa trocar `COLOQUE-AQUI-O-EMAIL-DA-SUA-CONTA` e rodar UMA vez no SQL Editor (recusa
+segunda execução; acerta tipo/cor de categorias existentes com o mesmo nome, ex. Salário vira entrada). NÃO foi testado num Postgres
+(Docker desligado), só revisado; se der erro nada é criado. Falta: John rodar e conferir; depois construir o Dashboard de verdade.
+
 ## Próximos passos (opções; um por vez, só com o ok do John)
 1. Tela para **cadastrar contas** (categorias já têm tela; contas hoje só pelo SQL ou Table Editor; o formulário "Novo" avisa quando não há conta).
 2. ~~Melhorar o visual~~ (feito, falta o John conferir e commitar).
